@@ -24,7 +24,7 @@ const Button: React.FC<
       className={classNames(
         'leading-6 text-sm',
         'font-bold',
-        'py-1 px-4',
+        'py-1 px-4 rounded-lg shadow-btn',
         classes[variant],
       )}
       {...props}
