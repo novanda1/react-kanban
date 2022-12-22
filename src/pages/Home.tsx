@@ -1,5 +1,5 @@
 const Home: React.FC = () => {
-  return <div>Im Home</div>
+  return <div className="bg-success">Im Home</div>
 }
 
 export default Home
