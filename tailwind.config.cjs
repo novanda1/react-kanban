@@ -15,12 +15,18 @@ module.exports = {
         'input-border': '#EDEDED',
 
         neutral: {
+          40: '#E0E0E0',
           90: '#404040',
           100: '#1D1F20',
+          200: '#1E1F21',
         },
       },
       boxShadow: {
         btn: '0px 1px 2px rgba(0, 0, 0, 0.12)',
+      },
+      spacing: {
+        app: '1440',
+        4.5: '18px',
       },
     },
   },
