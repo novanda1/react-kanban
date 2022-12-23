@@ -11,13 +11,14 @@ const KanbanCardItem: FC<{
     <div
       ref={provided.innerRef}
       {...provided.draggableProps}
+      {...provided.dragHandleProps}
       className={classNames(
         'bg-gray-50 border border-gray-200 p-2 text-neutral-100 text-sm',
         'transition-all duration-300 ease',
-        'my-1'
+        'my-1',
       )}
     >
-      <div {...provided.dragHandleProps}>{item.name}</div>
+      <div>{item.name}</div>
     </div>
   )
 }

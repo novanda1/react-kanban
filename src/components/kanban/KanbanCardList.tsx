@@ -1,7 +1,7 @@
 import { FC } from 'react'
 import { Draggable, Droppable } from 'react-beautiful-dnd'
 import { Todo } from '../../api/api'
-import { useItems } from '../../api/useItems'
+import { useItemLocal, useItems } from '../../api/useItems'
 import KanbanCardItem from './KanbanCardItem'
 import { KanbanType } from './utils'
 
@@ -19,6 +19,7 @@ const KanbanCardList: FC<Props> = ({
   type,
 }) => {
   const { items, isLoading } = useItems(todo.id)
+  const { getByTodoId } = useItemLocal()
 
   return (
     <Droppable droppableId={'todoid-' + todo.id} type={listType}>
@@ -27,16 +28,14 @@ const KanbanCardList: FC<Props> = ({
           {isLoading && 'Loading items...'}
 
           <div className="inline-flex flex-col mt-4">
-            {items?.map((item, index) => (
+            {getByTodoId(todo.id)?.items?.map((item, index) => (
               <Draggable
                 key={item.id}
                 draggableId={item.id.toString()}
                 index={index}
               >
                 {(dropProvided) => (
-                  <>
-                    <KanbanCardItem provided={dropProvided} item={item} />
-                  </>
+                  <KanbanCardItem provided={dropProvided} item={item} />
                 )}
               </Draggable>
             ))}

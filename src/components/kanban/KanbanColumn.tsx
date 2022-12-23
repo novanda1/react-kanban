@@ -12,8 +12,6 @@ import KanbanCardList from './KanbanCardList'
 import TitleBadge from './TitleBadge'
 import { indexToTypeMap, kanbanTypeClasses } from './utils'
 
-const containerClasses = 'm-2 flex flex-col w-full'
-
 type Props = {
   index: number
   todo: Todo
@@ -64,12 +62,16 @@ const KanbanColumn: FC<Props> = ({ index, todo }) => {
   }
 
   return (
-    <Draggable draggableId={'todoid-' + todo.id} index={index}>
+    <Draggable
+      draggableId={'todoid-' + todo.id}
+      index={index}
+      isDragDisabled={true}
+    >
       {(provided) => (
         <div
-          className={classNames(containerClasses)}
           ref={provided.innerRef}
           {...provided.draggableProps}
+          {...provided.dragHandleProps}
         >
           <div
             className={classNames(
