@@ -3,8 +3,9 @@ import Api, { CreateItemDto, UpdateItemDto } from './api'
 import constants from './constants'
 
 export const useItems = (todoId: number) => {
-  const { data, error, isLoading, mutate } = useSWR(constants.ITEMS, () =>
-    Api.getItems(todoId),
+  const { data, error, isLoading, mutate } = useSWR(
+    [constants.ITEMS, todoId],
+    () => Api.getItems(todoId),
   )
 
   const createItem = async (todoId: number, dto: CreateItemDto) => {
