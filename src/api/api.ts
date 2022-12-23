@@ -88,7 +88,7 @@ class Api {
         headers: { Accept: '*/*', 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name: 'Noah',
-          email: 'novandaahsan1@gmail.com',
+          email: 'novandaahsan2@gmail.com',
           password: 'password',
           password_confirmation: 'password',
         }),
