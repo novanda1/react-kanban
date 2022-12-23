@@ -25,9 +25,15 @@ module.exports = {
         btn: '0px 1px 2px rgba(0, 0, 0, 0.12)',
       },
       spacing: {
-        app: '1440',
+        app: '1440px',
         4.5: '18px',
       },
+      width: {
+        app: '1440px',
+      },
+      maxWidth:{
+        app: '1440px',
+      }
     },
   },
   plugins: [],
