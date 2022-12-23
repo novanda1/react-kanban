@@ -2,10 +2,10 @@ import useSWR from 'swr'
 import Api, { CreateItemDto, UpdateItemDto } from './api'
 import constants from './constants'
 
-export const useItems = (todoId: number) => {
+export const useItems = (todoId?: number) => {
   const { data, error, isLoading, mutate } = useSWR(
     [constants.ITEMS, todoId],
-    () => Api.getItems(todoId),
+    todoId ? () => Api.getItems(todoId) : null, // If null it means fetch from cache only.
   )
 
   const createItem = async (todoId: number, dto: CreateItemDto) => {
@@ -13,7 +13,7 @@ export const useItems = (todoId: number) => {
       const createdItem = await Api.createItem(todoId, dto)
       if (!createdItem) throw new Error(`failed to create item: ${createdItem}`)
 
-      const newItems = [createdItem, ...(data || [])]
+      const newItems = [...(data || []), createdItem]
       mutate(newItems)
 
       return newItems
