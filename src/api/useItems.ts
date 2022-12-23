@@ -1,11 +1,20 @@
-import useSWR from 'swr'
-import Api, { CreateItemDto, UpdateItemDto } from './api'
+import useSWR, { useSWRConfig } from 'swr'
+import Api, { CreateItemDto, Item, UpdateItemDto } from './api'
 import constants from './constants'
 
 export const useItems = (todoId?: number) => {
+  const swrKey = [constants.ITEMS, todoId]
+
+  const { mutate: globalMutation } = useSWRConfig()
+
   const { data, error, isLoading, mutate } = useSWR(
-    [constants.ITEMS, todoId],
+    swrKey,
     todoId ? () => Api.getItems(todoId) : null, // If null it means fetch from cache only.
+    {
+      onSuccess: (data) => {
+        localStorage.setItem(JSON.stringify(swrKey), JSON.stringify(data))
+      },
+    },
   )
 
   const createItem = async (todoId: number, dto: CreateItemDto) => {
@@ -27,18 +36,41 @@ export const useItems = (todoId?: number) => {
     itemId: number,
     dto: UpdateItemDto,
   ) => {
-    try {
-      const updatedItem = await Api.updateItem(todoId, itemId, dto)
-      if (!updatedItem)
-        throw new Error(`failed to update items: ${updatedItem}`)
+    const prevItems = localStorage.getItem(
+      JSON.stringify([constants.ITEMS, todoId]),
+    )
+    const nextItems = localStorage.getItem(
+      JSON.stringify([constants.ITEMS, dto.target_todo_id]),
+    )
 
-      const newItems = [updatedItem, ...(data || [])]
-      mutate(newItems)
+    const updatedItem = (JSON.parse(prevItems || '') as Item[]).find(
+      (item) => item.id !== itemId,
+    )
 
-      return newItems
-    } catch (error) {
-      // Handle error here.
-    }
+    if (!updateItem) return
+
+    globalMutation(
+      [constants.ITEMS, todoId],
+      (JSON.parse(prevItems || '') as Item[]).filter(
+        (item) => item.id !== updatedItem!.id,
+      ),
+      {
+        populateCache: true,
+        revalidate: false,
+        // rollbackOnError: true,
+      },
+    )
+
+    globalMutation(
+      [constants.ITEMS, dto.target_todo_id],
+      [updatedItem, ...(JSON.parse(nextItems || '') as Item[])],
+      {
+        optimisticData: true,
+        populateCache: true,
+        revalidate: false,
+        // rollbackOnError: true,
+      },
+    )
   }
 
   const deleteItem = async (todoId: number, itemId: number) => {
