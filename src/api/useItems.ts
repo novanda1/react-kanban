@@ -99,6 +99,7 @@ export const useItemLocal = create(
       Api.updateItem(target.todoId, target.itemId, {
         name: params.name,
         progress_percentage: params.progress_percentage,
+        target_todo_id: target.todoId,
       })
 
       set({ mapTodoToItems: updatedMapTodoToItems })
