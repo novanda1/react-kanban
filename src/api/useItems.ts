@@ -1,6 +1,6 @@
 import useSWR, { useSWRConfig } from 'swr'
 import create from 'zustand'
-import Api, { CreateItemDto, Item, UpdateItemDto } from './api'
+import Api, { CreateItemDto, Item, UpdateItemDto, UpdateItemValue } from './api'
 import constants from './constants'
 import { combine } from 'zustand/middleware'
 import { produce } from 'immer'
@@ -21,18 +21,40 @@ type UpdateItemParams = {
     index: number
   }
 }
-
 const initialMapTodoIdToItems: MapTodoIdToItems = []
 
 export const useItemLocal = create(
   combine({ mapTodoToItems: initialMapTodoIdToItems }, (set, get) => ({
-    setByTodoId: (todoId: number, items: Item[]) =>
-      set((state) => ({
-        mapTodoToItems: [...state.mapTodoToItems, { todoId, items }],
-      })),
+    setByTodoId: (todoId: number, items: Item[]) => {
+      set((state) => {
+        const newMapTodoToItems = produce(state.mapTodoToItems, (draft) => {
+          const existingIndex = draft.findIndex((t) => t.todoId === todoId)
+
+          if (existingIndex > -1) {
+            draft[existingIndex].items = items
+          } else {
+            draft.push({ todoId, items })
+          }
+        })
+
+        return {
+          mapTodoToItems: newMapTodoToItems,
+        }
+      })
+    },
     getByTodoId: (todoId: number) =>
       get().mapTodoToItems.find((item) => item.todoId === todoId),
-    updateItem: async ({ destination, itemId, source }: UpdateItemParams) => {
+
+    /**
+     *
+     * @todo The name should be changeOrder or something to make this clear
+     * because the function purpose is to move item to another index / another todo
+     *
+     * note: as this code written on 25-Dec-2022 the backend doesnt support
+     * to change item to specific index, move item to specific todo just `push` the item
+     * to last index
+     */
+    updateItem: ({ destination, itemId, source }: UpdateItemParams) => {
       const updatedMapTodoToItems = produce(get().mapTodoToItems, (draft) => {
         const currentTodoIndex = draft.findIndex(
           (m) => m.todoId === source.todoId,
@@ -57,14 +79,47 @@ export const useItemLocal = create(
 
       set({ mapTodoToItems: updatedMapTodoToItems })
     },
+
+    editItem: (
+      target: { todoId: number; itemId: number },
+      params: UpdateItemValue,
+    ) => {
+      const updatedMapTodoToItems = produce(get().mapTodoToItems, (draft) => {
+        const todoIndex = draft.findIndex((t) => t.todoId === target.todoId)
+        const itemIndex = draft[todoIndex].items.findIndex(
+          (item) => item.id === target.itemId,
+        )
+
+        Object.keys(params).forEach((key) => {
+          draft[todoIndex].items[itemIndex][key as keyof UpdateItemValue] =
+            params[key as keyof UpdateItemValue]
+        })
+      })
+
+      Api.updateItem(target.todoId, target.itemId, {
+        name: params.name,
+        progress_percentage: params.progress_percentage,
+      })
+
+      set({ mapTodoToItems: updatedMapTodoToItems })
+    },
+
+    removeItemInTodoId: (todoId: number, itemId: number) => {
+      const updatedMapTodoToItems = produce(get().mapTodoToItems, (draft) => {
+        const todoIndex = draft.findIndex((t) => t.todoId === todoId)
+        const itemIndex = draft[todoIndex].items.findIndex(
+          (item) => item.id === itemId,
+        )
+
+        draft[todoId].items.splice(itemId, 1)
+      })
+    },
   })),
 )
 
 export const useItems = (todoId?: number) => {
   const swrKey = [constants.ITEMS, todoId]
   const { setByTodoId, getByTodoId, mapTodoToItems } = useItemLocal()
-
-  const { mutate: globalMutation } = useSWRConfig()
 
   const { data, error, isLoading, mutate } = useSWR(
     swrKey,
@@ -82,7 +137,9 @@ export const useItems = (todoId?: number) => {
       if (!createdItem) throw new Error(`failed to create item: ${createdItem}`)
 
       const newItems = [...(data || []), createdItem]
+
       mutate(newItems)
+      setByTodoId(todoId, newItems)
 
       return newItems
     } catch (error) {

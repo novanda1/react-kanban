@@ -1,10 +1,15 @@
+export type Timestamp = {
+  created_at: string
+  updated_at: string
+}
+
+export type WithTimestamp<T> = Timestamp & T
+
 export type Todo = {
   id: number
   title: string
   description: string
   created_by: string
-  created_at: string
-  updated_at: string
 }
 
 export type Item = {
@@ -12,8 +17,6 @@ export type Item = {
   name: string
   done: any
   todo_id: number
-  created_at: string
-  updated_at: string
   progress_percentage: number | null
 }
 
@@ -27,10 +30,16 @@ export type CreateItemDto = {
   progress_percentage: number
 }
 
-export type UpdateItemDto = {
+/**
+ * @todo
+ * make UpdateItemDto more clear by change their name
+ * this type the purpose is for move item to another todo
+ */
+export type UpdateItemDto = Partial<Omit<Item, 'id' | 'todo_id'>> & {
   target_todo_id: number
-  name?: string
 }
+
+export type UpdateItemValue = Omit<UpdateItemDto, 'target_todo_id'>
 
 class Api {
   static tokenKey = 'token'
@@ -134,7 +143,7 @@ class Api {
   static async updateItem(
     todoId: number,
     itemId: number,
-    dto: UpdateItemDto,
+    dto: UpdateItemDto | UpdateItemValue,
   ): Promise<Item | undefined> {
     if (!todoId || !itemId || !dto) return
 
