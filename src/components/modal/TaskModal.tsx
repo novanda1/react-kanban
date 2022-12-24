@@ -14,7 +14,7 @@ const TaskModal: FC<Props> = ({ children, ...dialogProps }) => {
   return (
     <Root {...dialogProps}>
       <Portal>
-        <Overlay className="fixed inset-0 bg-white bg-opacity-60 backdrop-blur-sm" />
+        <Overlay className="fixed inset-0 bg-neutral-100 bg-opacity-60" />
         <Content
           className={classNames(
             'shadow-modal',

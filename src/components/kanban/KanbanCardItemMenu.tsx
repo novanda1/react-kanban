@@ -1,11 +1,13 @@
-import { FC, useState } from 'react'
 import * as Menu from '@radix-ui/react-dropdown-menu'
-import IconOptionDots from '../../icons/IconOptionDots'
 import classNames from 'classnames'
-import IconArrowRight from '../../icons/IconArrowRight'
+import { FC, useState } from 'react'
+import type { Item, Todo } from '../../api/api'
 import IconArrowLeft from '../../icons/IconArrowLeft'
-import IconEdit from '../../icons/IconEdit'
+import IconArrowRight from '../../icons/IconArrowRight'
 import IconDelete from '../../icons/IconDelete'
+import IconEdit from '../../icons/IconEdit'
+import IconOptionDots from '../../icons/IconOptionDots'
+import TaskModalWrite from '../modal/TaskModalWrite'
 
 const MenuItem: FC<
   Menu.DropdownMenuItemProps &
@@ -27,7 +29,7 @@ const MenuItem: FC<
   />
 )
 
-const KanbanCardItemMenu: FC = () => {
+const KanbanCardItemMenu: FC<{ todo: Todo; item: Item }> = ({ todo, item }) => {
   const [open, setOpen] = useState(false)
 
   return (
@@ -50,10 +52,22 @@ const KanbanCardItemMenu: FC = () => {
             <IconArrowLeft className="justify-self-center" />
             <p>Move Left</p>
           </MenuItem>
-          <MenuItem>
-            <IconEdit className="justify-self-center" />
-            <p>Edit</p>
-          </MenuItem>
+
+          <TaskModalWrite
+            operation="edit"
+            todo={todo}
+            itemId={item.id}
+            initialForm={{
+              name: item.name,
+              progress_percentage: item.progress_percentage,
+            }}
+          >
+            <MenuItem onSelect={(e) => e.preventDefault()}>
+              <IconEdit className="justify-self-center" />
+              <p>Edit</p>
+            </MenuItem>
+          </TaskModalWrite>
+
           <MenuItem isDelete>
             <IconDelete className="justify-self-center" />
             <p>Delete</p>

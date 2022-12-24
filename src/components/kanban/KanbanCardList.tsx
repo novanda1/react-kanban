@@ -38,7 +38,11 @@ const KanbanCardList: FC<Props> = ({
                     index={index}
                   >
                     {(dropProvided) => (
-                      <KanbanCardItem provided={dropProvided} item={item} />
+                      <KanbanCardItem
+                        provided={dropProvided}
+                        item={item}
+                        todo={todo}
+                      />
                     )}
                   </Draggable>
                 ))

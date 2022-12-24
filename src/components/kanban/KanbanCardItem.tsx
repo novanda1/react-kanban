@@ -1,15 +1,17 @@
 import classNames from 'classnames'
 import { FC } from 'react'
 import { DraggableProvided } from 'react-beautiful-dnd'
-import { Item } from '../../api/api'
-import IconOptionDots from '../../icons/IconOptionDots'
+import { Item, Todo } from '../../api/api'
 import Progress from '../Progress'
 import KanbanCardItemMenu from './KanbanCardItemMenu'
 
-const KanbanCardItem: FC<{
+type Props = {
   item: Item
+  todo: Todo
   provided: DraggableProvided
-}> = ({ provided, item }) => {
+}
+
+const KanbanCardItem: FC<Props> = ({ provided, item, todo }) => {
   return (
     <div
       ref={provided.innerRef}
@@ -33,7 +35,7 @@ const KanbanCardItem: FC<{
           }
         />
 
-        <KanbanCardItemMenu />
+        <KanbanCardItemMenu item={item} todo={todo} />
       </div>
     </div>
   )
