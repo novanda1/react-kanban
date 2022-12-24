@@ -16,6 +16,7 @@ const TaskModal: FC<Props> = ({ children, ...dialogProps }) => {
       <Portal>
         <Overlay className="fixed inset-0 bg-neutral-100 bg-opacity-60" />
         <Content
+          onOpenAutoFocus={(e) => e.preventDefault()}
           className={classNames(
             'shadow-modal',
             'fixed left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2',
