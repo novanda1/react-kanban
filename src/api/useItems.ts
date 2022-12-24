@@ -119,6 +119,68 @@ export const useItemLocal = create(
 
       set({ mapTodoToItems: updatedMapTodoToItems })
     },
+
+    moveToRightTodo: (params: { sourceId: number; item: Item }) => {
+      const currentTodoIndex = get().mapTodoToItems.findIndex(
+        (t) => t.todoId === params.sourceId,
+      )
+
+      const rightTodoIndex = currentTodoIndex + 1
+
+      console.log(`move from ${currentTodoIndex} to ${rightTodoIndex}`)
+
+      const nextTodo = get().mapTodoToItems[rightTodoIndex]
+
+      if (!nextTodo?.todoId) {
+        alert('cant move to the right')
+        return
+      }
+
+      Api.updateItem(params.sourceId, params.item.id, {
+        target_todo_id: nextTodo.todoId,
+      })
+
+      set({
+        mapTodoToItems: produce(get().mapTodoToItems, (draft) => {
+          const itemIndex = draft[currentTodoIndex].items.findIndex(
+            (it) => it.id === params.item.id,
+          )
+
+          draft[currentTodoIndex].items.splice(itemIndex, 1)
+          draft[rightTodoIndex].items.push(params.item)
+        }),
+      })
+    },
+
+    moveToLeftTodo: (params: { sourceId: number; item: Item }) => {
+      const currentTodoIndex = get().mapTodoToItems.findIndex(
+        (t) => t.todoId === params.sourceId,
+      )
+      const leftTodoIndex = currentTodoIndex - 1
+      const leftTodo = get().mapTodoToItems[leftTodoIndex]
+
+      console.log(`move from ${currentTodoIndex} to ${leftTodoIndex}`)
+
+      if (!leftTodo?.todoId) {
+        alert('cant move to the left')
+        return
+      }
+
+      Api.updateItem(params.sourceId, params.item.id, {
+        target_todo_id: leftTodo.todoId,
+      })
+
+      set({
+        mapTodoToItems: produce(get().mapTodoToItems, (draft) => {
+          const itemIndex = draft[currentTodoIndex].items.findIndex(
+            (it) => it.id === params.item.id,
+          )
+
+          draft[currentTodoIndex].items.splice(itemIndex, 1)
+          draft[leftTodoIndex].items.push(params.item)
+        }),
+      })
+    },
   })),
 )
 

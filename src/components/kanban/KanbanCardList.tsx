@@ -43,6 +43,7 @@ const KanbanCardList: FC<Props> = ({
                           provided={dragProvided}
                           item={item}
                           todo={todo}
+                          index={index}
                         />
                       </>
                     )}

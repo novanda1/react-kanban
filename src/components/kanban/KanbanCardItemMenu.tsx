@@ -1,7 +1,8 @@
 import * as Menu from '@radix-ui/react-dropdown-menu'
 import classNames from 'classnames'
-import { FC, useState } from 'react'
+import { FC, useCallback, useState } from 'react'
 import type { Item, Todo } from '../../api/api'
+import { useItemLocal } from '../../api/useItems'
 import IconArrowLeft from '../../icons/IconArrowLeft'
 import IconArrowRight from '../../icons/IconArrowRight'
 import IconDelete from '../../icons/IconDelete'
@@ -32,6 +33,10 @@ const MenuItem: FC<
 
 const KanbanCardItemMenu: FC<{ todo: Todo; item: Item }> = ({ todo, item }) => {
   const [open, setOpen] = useState(false)
+  const { moveToLeftTodo, moveToRightTodo } = useItemLocal()
+
+  const onMoveToLeft = () => moveToLeftTodo({ item, sourceId: todo.id })
+  const onMoveToRight = () => moveToRightTodo({ item, sourceId: todo.id })
 
   return (
     <Menu.Root open={open} onOpenChange={setOpen}>
@@ -45,11 +50,11 @@ const KanbanCardItemMenu: FC<{ todo: Todo; item: Item }> = ({ todo, item }) => {
           align="start"
           className="py-2 shadow-kanban-menu rounded bg-white w-80"
         >
-          <MenuItem>
+          <MenuItem onClick={onMoveToRight}>
             <IconArrowRight className="justify-self-center" />
             <p>Move Right</p>
           </MenuItem>
-          <MenuItem>
+          <MenuItem onClick={onMoveToLeft}>
             <IconArrowLeft className="justify-self-center" />
             <p>Move Left</p>
           </MenuItem>
