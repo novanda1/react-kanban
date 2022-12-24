@@ -1,6 +1,6 @@
 import classNames from 'classnames'
 
-type ButtonTypes = 'primary' | 'secondary'
+type ButtonTypes = 'primary' | 'secondary' | 'error'
 
 type ButtonProps = {
   variant: ButtonTypes
@@ -17,6 +17,7 @@ const Button: React.FC<
   const classes: Record<ButtonTypes, string> = {
     primary: 'bg-primary text-white',
     secondary: 'text-neutral-100 border-btn-border bg-white',
+    error: 'text-white bg-error-contrast',
   }
 
   return (

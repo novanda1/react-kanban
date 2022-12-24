@@ -7,6 +7,7 @@ import IconArrowRight from '../../icons/IconArrowRight'
 import IconDelete from '../../icons/IconDelete'
 import IconEdit from '../../icons/IconEdit'
 import IconOptionDots from '../../icons/IconOptionDots'
+import TaskModalDelete from '../modal/TaskModalDelete'
 import TaskModalWrite from '../modal/TaskModalWrite'
 
 const MenuItem: FC<
@@ -68,10 +69,12 @@ const KanbanCardItemMenu: FC<{ todo: Todo; item: Item }> = ({ todo, item }) => {
             </MenuItem>
           </TaskModalWrite>
 
-          <MenuItem isDelete>
-            <IconDelete className="justify-self-center" />
-            <p>Delete</p>
-          </MenuItem>
+          <TaskModalDelete itemId={item.id} todoId={todo.id}>
+            <MenuItem isDelete onClick={(e) => e.preventDefault()}>
+              <IconDelete className="justify-self-center" />
+              <p>Delete</p>
+            </MenuItem>
+          </TaskModalDelete>
         </Menu.Content>
       </Menu.Portal>
     </Menu.Root>

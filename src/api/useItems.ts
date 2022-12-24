@@ -112,8 +112,12 @@ export const useItemLocal = create(
           (item) => item.id === itemId,
         )
 
-        draft[todoId].items.splice(itemId, 1)
+        Api.deleteItem(todoId, itemId)
+
+        draft[todoIndex].items.splice(itemIndex, 1)
       })
+
+      set({ mapTodoToItems: updatedMapTodoToItems })
     },
   })),
 )

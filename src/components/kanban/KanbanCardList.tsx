@@ -37,12 +37,14 @@ const KanbanCardList: FC<Props> = ({
                     draggableId={item.id.toString()}
                     index={index}
                   >
-                    {(dropProvided) => (
-                      <KanbanCardItem
-                        provided={dropProvided}
-                        item={item}
-                        todo={todo}
-                      />
+                    {(dragProvided) => (
+                      <>
+                        <KanbanCardItem
+                          provided={dragProvided}
+                          item={item}
+                          todo={todo}
+                        />
+                      </>
                     )}
                   </Draggable>
                 ))

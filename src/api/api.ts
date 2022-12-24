@@ -80,6 +80,7 @@ class Api {
        * We should refresh the users token
        */
       if (result.status === 422) Api.getOrRenewToken()
+      if (result.status === 204) return // no content
       return result.json()
     })
   }
