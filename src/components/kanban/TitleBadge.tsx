@@ -9,7 +9,7 @@ const TitleBadge: FC<PropsWithChildren & { variant: KanbanType }> = ({
   return (
     <h3
       className={classNames(
-        'p-1 w-max border text-xs',
+        'py-0.5 px-2 w-max border text-xs leading-5 rounded',
         kanbanTypeClasses[type].title,
       )}
     >

@@ -75,7 +75,7 @@ const KanbanColumn: FC<Props> = ({ index, todo }) => {
         >
           <div
             className={classNames(
-              'p-4 border w-full h-max',
+              'p-4 border w-full h-max rounded',
               kanbanTypeClasses[type].card,
               'transtition-all duration-300 ease',
             )}
@@ -83,7 +83,9 @@ const KanbanColumn: FC<Props> = ({ index, todo }) => {
             <TitleBadge {...provided.dragHandleProps} variant={type}>
               {todo.title}
             </TitleBadge>
-            <p className="text-xs mt-2">{todo.description}</p>
+            <p className="font-bold text-xs mt-2 leading-5">
+              {todo.description}
+            </p>
 
             <KanbanCardList todo={todo} listType="ITEM" type={type} />
 
@@ -96,30 +98,40 @@ const KanbanColumn: FC<Props> = ({ index, todo }) => {
             </button>
 
             <TaskModal open={open} onOpenChange={setOpen}>
-              <h3>Create Task</h3>
+              <div className="flex flex-row">
+                <h3 className="text-lg font-bold text-neutral-100 flex-1">
+                  Create Task
+                </h3>
+                <button>closeicon</button>
+              </div>
 
-              <div>
+              <div className="mt-6">
                 <div className="flex flex-col">
                   <Label>Task Name</Label>
                   <Input
                     type="text"
                     name="name"
+                    className="mt-2"
                     placeholder="Type your Task"
                     value={createTaskForm.name}
                     onChange={handleChange}
                   />
                 </div>
 
-                <Input
-                  type="text"
-                  placeholder="70%"
-                  name="progress_percentage"
-                  value={createTaskForm.progress_percentage || ''}
-                  onChange={handleChange}
-                />
+                <div className="mt-4 flex flex-col">
+                  <Label>Progress</Label>
+                  <Input
+                    type="text"
+                    className="mt-2"
+                    placeholder="70%"
+                    name="progress_percentage"
+                    value={createTaskForm.progress_percentage || ''}
+                    onChange={handleChange}
+                  />
+                </div>
               </div>
 
-              <div>
+              <div className="flex flex-row justify-end mt-6 w-full gap-2.5">
                 <Button variant="secondary" onClick={toggleOpen}>
                   Cancel
                 </Button>

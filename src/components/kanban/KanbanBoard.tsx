@@ -37,12 +37,12 @@ const KanbanBoard: FC = () => {
           <div
             ref={innerRef}
             {...droppableProps}
-            className="inline-flex w-full gap-5"
+            className="inline-flex w-full gap-4 overflow-x-auto h-screen"
           >
             {!todos?.length && 'Loading todos...'}
 
             {todos?.map((todo, index) => (
-              <div key={todo.id} className="m-2 flex flex-col w-full">
+              <div key={todo.id} className="flex flex-col w-full min-w-[300px]">
                 <KanbanColumn index={index} todo={todo} />
                 {placeholder}
               </div>

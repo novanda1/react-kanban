@@ -8,7 +8,8 @@ const Input: React.FC<React.InputHTMLAttributes<HTMLInputElement>> = ({
     <input
       className={classNames(
         'text-xs text-neutral-90',
-        'border-input-border rounded-lg',
+        'border-2 border-input-border rounded-lg',
+        'py-2 px-4',
         className,
       )}
       {...props}
